@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <link rel="icon" href="./check-square.svg" />
+    <title>ToDoList</title>
+
+    <!-- update the version number as needed -->
+    <script src="/__/firebase/7.19.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script src="/__/firebase/7.19.1/firebase-auth.js"></script>
+    <script src="/__/firebase/7.19.1/firebase-database.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script src="/__/firebase/init.js"></script>
+
+    <!-- My Ref to files-->
+    <!-- CSS-->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="container-fluid bg-dark text-white">
+        <div class="row">
+          <img
+            class="col-sm-auto"
+            src="./check-square.svg"
+            alt="Icon"
+            style="max-width: 70px"
+          />
+          <div class="col">
+            <input
+              id="change-username-tag"
+              class="bg-dark text-white form-control d-none"
+              type="text"
+            />
+            <h2 id="username-tag" alt="Click to change username"></h2>
+          </div>
+          <button class="btn btn-danger d-none" id="logout-button">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <div class="row">
+          <h1 class="mx-auto col-auto">ToDoList</h1>
+        </div>
+
+        <div class="row d-none" id="login-register">
+          <div class="card mx-auto">
+            <div class="card-body">
+              <div>
+                <div class="card-title">Log In</div>
+                <div class="input-group">
+                  <input
+                    autocomplete="off"
+                    class="form-control"
+                    type="email"
+                    id="text-loginEmail"
+                    placeholder="Email"
+                  />
+                  <input
+                    autocomplete="off"
+                    class="form-control"
+                    type="password"
+                    id="text-loginPassword"
+                    placeholder="Password"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" id="btn-login">
+                      Login
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div>
+                <div class="card-title">Register</div>
+                <div class="input-group">
+                  <input
+                    autocomplete="off"
+                    class="form-control"
+                    type="email"
+                    id="text-registerEmail"
+                    placeholder="Email"
+                  />
+                  <input
+                    autocomplete="off"
+                    class="form-control"
+                    type="password"
+                    id="text-registerPassword"
+                    placeholder="Password"
+                  />
+                  <input
+                    autocomplete="off"
+                    class="form-control"
+                    type="password"
+                    id="text-registerRepeatPassword"
+                    placeholder="Repeat Password"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" id="btn-register">
+                      Register
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row container d-none" id="content">
+          <div class="card mx-auto row col-auto" id="add-task">
+            <div class="card-body">
+              <h5 class="card-title">Add a task</h5>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"
+                    >Task title</span
+                  >
+                </div>
+                <input
+                  id="text-taskTitle"
+                  type="text"
+                  class="form-control"
+                  placeholder="Task title"
+                  aria-label="Task title"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"
+                    >Task description</span
+                  >
+                </div>
+                <textarea
+                  id="text-taskDescription"
+                  type="text"
+                  class="form-control"
+                  placeholder="Task description"
+                  aria-label="Task description"
+                  aria-describedby="basic-addon1"
+                ></textarea>
+              </div>
+            </div>
+            <button class="btn btn-primary text-center" id="btn-addTask">
+              Add task
+            </button>
+          </div>
+
+          <div class="row container" id="tasks">
+            <div class="col"></div>
+            <div class="card col-6 mx-auto" id="insert-tasks">
+              <!-- Template-->
+              
+              <!--End Template-->
+            </div>
+            <div class="col-sm"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer style="position: fixed; bottom: 0px; right: 10px">
+      <a href="https://github.com/gustavoso3">My Github</a>
+    </footer>
+
+    <script src="./index.js"></script>
+  </body>
+</html>
