@@ -1,18 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-  // // The Firebase SDK is initialized and available here!
-  //
-  // firebase.auth().onAuthStateChanged(user => { });
-  // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-  // firebase.messaging().requestPermission().then(() => { });
-  // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-  //
-  // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
   let loginCard = document.getElementById("login-register");
   let logoutButton = document.getElementById("logout-button");
   let usernameTag = document.getElementById("username-tag");
   let changeusernameInput = document.getElementById("change-username-tag");
+
+  let addTaskBtn = document.getElementById("btn-addTask");
 
   let loginBtn = document.getElementById("btn-login");
   let registerBtn = document.getElementById("btn-register");
@@ -36,9 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
       content.classList.remove("d-none");
       //Recuest and show tasks
 
-      let dbRef = firebase.database().ref().child(user.email);
-      console.log(dbRef);
-      dbRef.on("value", (snap) => console.log(snap.val()));
+      let dbRef = firebase
+        .database()
+        .ref()
+        .child("users/" + user.uid + "/");
+      dbRef.on("child_added", (snap) => {
+        //console.log(snap.val());
+        //console.log(Object.keys(snap.val()));
+        let dbTasks = snap.val();
+        addTaskToPage(dbTasks);
+      });
     } else {
       //Toggle visibility
       usernameTag.innerHTML = "";
@@ -65,6 +64,82 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
   };
+  function getDate(date) {
+    let dd = date.slice(8, 10);
+    let mm = date.slice(5, 7);
+    let yy = date.slice(0, 4);
+
+    return mm + "/" + dd + "/" + yy;
+  }
+
+  function addTaskToPage(task) {
+    let date = getDate(task.date);
+
+    let cardBody = document.createElement("div");
+    cardBody.classList.add("card-body", "container");
+    cardBody.id = task.date;
+
+    let titleDiv = document.createElement("div");
+    titleDiv.classList.add("row");
+
+    let cardTitle = document.createElement("h5");
+    cardTitle.classList.add("card-title", "col-sm-8");
+    cardTitle.innerText = task.title;
+
+    let cardDate = document.createElement("h6");
+    cardDate.classList.add("card-text", "col-sm-4", "text-muted");
+    cardDate.innerText = date;
+
+    titleDiv.appendChild(cardTitle);
+    titleDiv.appendChild(cardDate);
+
+    let descriptionTag = document.createElement("p");
+    descriptionTag.classList.add("card-subtitle", "text-muted");
+    descriptionTag.innerText = "Description";
+
+    let cardDescription = document.createElement("p");
+    cardDescription.classList.add("card-subtitle");
+    cardDescription.innerText =
+      task.description !== ""
+        ? task.description
+        : "No description for this task.";
+
+    let insert = document.getElementById("insert-tasks");
+
+    let doneBtn = document.createElement("button");
+    doneBtn.classList.add("btn", "btn-success");
+    doneBtn.innerText = "Done";
+    doneBtn.onclick = () => {
+      firebase
+        .database()
+        .ref()
+        .child("users/" + globalUser.uid + "/" + task.date)
+        .set(null, function (error) {
+          if (error) {
+            // The write failed...
+          } else {
+            // Data saved successfully!
+            insert.removeChild(cardBody);
+          }
+        });
+    };
+    //@TODO ADD DESTRUCTION OF TASK
+
+    cardBody.appendChild(titleDiv);
+    cardBody.appendChild(descriptionTag);
+    cardBody.appendChild(cardDescription);
+    cardBody.appendChild(doneBtn);
+
+    insert.appendChild(cardBody);
+  }
+  function createTask(title, description) {
+    let currentDate = new Date().toJSON().replace(/:/g, "-").replace(".", "-");
+    return (task = {
+      date: currentDate,
+      title: title,
+      description: description,
+    });
+  }
 
   usernameTag.onclick = () => {
     if (globalUser !== null) {
@@ -133,5 +208,23 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error("Sign Out Error", error);
         }
       );
+  };
+
+  addTaskBtn.onclick = () => {
+    let newTaskTitle = document.getElementById("text-taskTitle").value;
+    let newTaskDescription = document.getElementById("text-taskDescription")
+      .value;
+
+    document.getElementById("text-taskTitle").value = "";
+    document.getElementById("text-taskDescription").value = "";
+    let newTask;
+    if (newTaskTitle !== "") {
+      newTask = createTask(newTaskTitle, newTaskDescription);
+    } else return null;
+
+    firebase
+      .database()
+      .ref("users/" + globalUser.uid + "/" + newTask.date + "/")
+      .set(newTask);
   };
 });
